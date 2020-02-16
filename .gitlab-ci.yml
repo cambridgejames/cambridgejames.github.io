@@ -1,6 +1,5 @@
 stages:
   - build
-  - test
   - deploy
 
 build:
@@ -13,18 +12,6 @@ build:
   artifacts:
     paths:
       - public/
-      - .deploy_git/
-
-test:
-  stage: test
-  tags:
-    - hexo-public
-  script:
-    - cnpm --version
-  artifacts:
-    paths:
-      - public/
-      - .deploy_git/
 
 deploy:
   stage: deploy
