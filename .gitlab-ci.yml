@@ -1,0 +1,31 @@
+default:
+  before_script:
+    - cnpm --version
+    - hexo --version
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  tags:
+    - hexo-public
+  script:
+    - cnpm install
+    - hexo generate
+
+test:
+  stage: test
+  tags:
+    - hexo-public
+  script:
+    - hexo --version
+
+deploy:
+  stage: deploy
+  tags:
+    - hexo-public
+  script:
+    - hexo deploy
