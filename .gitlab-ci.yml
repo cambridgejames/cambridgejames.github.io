@@ -1,6 +1,5 @@
 stages:
   - build
-  - deploy
 
 build:
   stage: build
@@ -9,13 +8,4 @@ build:
   script:
     - cnpm install
     - hexo generate
-  artifacts:
-    paths:
-      - public/
-
-deploy:
-  stage: deploy
-  tags:
-    - hexo-public
-  script:
     - hexo deploy
