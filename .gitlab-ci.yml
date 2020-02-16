@@ -3,10 +3,6 @@ stages:
   - test
   - deploy
 
-cache:
-  paths:
-    - node_modules/
-
 build:
   stage: build
   tags:
@@ -24,7 +20,7 @@ test:
   tags:
     - hexo-public
   script:
-    - hexo --version
+    - cnpm --version
   artifacts:
     paths:
       - public/
