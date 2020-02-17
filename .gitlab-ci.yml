@@ -1,17 +1,16 @@
-# This file is a template, and might need editing before it works on your project.
-# Full project: https://gitlab.com/pages/hexo
 image: node:6.4.1
 
 stages:
   - pages
   - deploy
 
+# 生成hexo静态页面
 pages:
   stage: pages
   tags:
     - hexo-public
   script:
-    - cnpm install
+    - cnpm install  # 使用淘宝源cnpm加快安装速度
     - ./node_modules/hexo/bin/hexo generate
   artifacts:
     paths:
@@ -23,11 +22,21 @@ pages:
   only:
     - master
 
+# 将生成的页面提交至相应的存储库进行自动部署
 deploy:
   stage: deploy
   tags:
     - hexo-public
   script:
     - ./node_modules/hexo/bin/hexo deploy
+  dependencies:
+    - pages
+  artifacts:
+    paths:
+    - public
+  cache:
+    paths:
+      - node_modules
+    key: project
   only:
     - master
