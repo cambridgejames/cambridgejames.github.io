@@ -28,8 +28,8 @@ deploy:
   tags:
     - hexo-public
   script:
-    - git config user.name powerinv
-    - git config user.email cambridge_james@foxmail.com
+    #- git config user.name powerinv
+    #- git config user.email cambridge_james@foxmail.com
     - ./node_modules/hexo/bin/hexo deploy
   dependencies:
     - pages
