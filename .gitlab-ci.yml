@@ -7,6 +7,7 @@ stages:
   - deploy
 
 pages:
+  stage: pages
   tags:
     - hexo-public
   script:
@@ -23,6 +24,7 @@ pages:
     - master
 
 deploy:
+  stage: deploy
   tags:
     - hexo-public
   script:
