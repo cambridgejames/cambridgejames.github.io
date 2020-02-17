@@ -8,7 +8,7 @@ stages:
 pages:
   stage: pages
   tags:
-    - hexo-public
+    - hexo-blog-source-builder
   script:
     - cnpm install  # 使用淘宝源cnpm加快安装速度
     - ./node_modules/hexo/bin/hexo generate
@@ -26,16 +26,13 @@ pages:
 deploy:
   stage: deploy
   tags:
-    - hexo-public
+    - hexo-blog-source-builder
   script:
     #- git config user.name powerinv
     #- git config user.email cambridge_james@foxmail.com
     - ./node_modules/hexo/bin/hexo deploy
   dependencies:
     - pages
-  artifacts:
-    paths:
-    - public
   cache:
     paths:
       - node_modules
