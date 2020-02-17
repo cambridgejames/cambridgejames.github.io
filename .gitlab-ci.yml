@@ -11,7 +11,7 @@ pages:
   tags:
     - hexo-public
   script:
-    - npm install
+    - cnpm install
     - ./node_modules/hexo/bin/hexo generate
   artifacts:
     paths:
