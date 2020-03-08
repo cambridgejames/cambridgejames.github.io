@@ -1,31 +1,41 @@
-default:
-  before_script:
-    - cnpm --version
-    - hexo --version
+image: node:6.4.1
 
 stages:
-  - build
-  - test
+  - pages
   - deploy
 
-build:
-  stage: build
+# 生成hexo静态页面
+pages:
+  stage: pages
   tags:
-    - hexo-public
+    - hexo-blog-source-builder
   script:
-    - cnpm install
-    - hexo generate
+    - cnpm install  # 使用淘宝源cnpm加快安装速度
+    - ./node_modules/hexo/bin/hexo generate
+  artifacts:
+    paths:
+    - public
+  cache:
+    paths:
+      - node_modules
+    key: project
+  only:
+    - master
 
-test:
-  stage: test
-  tags:
-    - hexo-public
-  script:
-    - hexo --version
-
+# 将生成的页面提交至相应的存储库进行自动部署
 deploy:
   stage: deploy
   tags:
-    - hexo-public
+    - hexo-blog-source-builder
   script:
-    - hexo deploy
+    #- git config user.name powerinv
+    #- git config user.email cambridge_james@foxmail.com
+    - ./node_modules/hexo/bin/hexo deploy
+  dependencies:
+    - pages
+  cache:
+    paths:
+      - node_modules
+    key: project
+  only:
+    - master
