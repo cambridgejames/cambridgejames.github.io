@@ -9,11 +9,11 @@ description: 一个专注于分享各种技术知识的个人博客
 keywords:
 author: Cambridge James
 language: zh-Hans
-timezone:
+# timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://cambridgejames.github.io
+url: https://blog.powerinv.net.cn
 root: /
 # permalink: :year/:id/
 permalink: posts/:abbrlink.html  # 此处可以自己设置，也可以直接使用 :/abbrlink
