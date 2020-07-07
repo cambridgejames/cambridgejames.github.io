@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>史上最帅的技术宅</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://blog.powerinv.net.cn/"/>
+  <updated>2020-07-07T19:21:56.311Z</updated>
+  <id>https://blog.powerinv.net.cn/</id>
+  
+  <author>
+    <name>Cambridge James</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ajax的三种写法</title>
+    <link href="https://blog.powerinv.net.cn/posts/d457bf9d.html"/>
+    <id>https://blog.powerinv.net.cn/posts/d457bf9d.html</id>
+    <published>2020-07-07T11:51:34.176Z</published>
+    <updated>2020-07-07T19:21:56.311Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p><strong>摘要：</strong> 本篇文章总结并对比了使用原生JavaScript、jQuery和Node.js中的axios库通过Ajax技术请求后端接口时的不同写法。</p></blockquote><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>研究前端开发也有不少日子了，算起来练习时长怎么也得有两年半了吧，一直没怎么认真做过总结。再加上这个博客自从搭建好了之后就没怎么用过，所以今天先来总结一下自己平常用过的几种Ajax请求的编写方法，同时也给这个博客增加点内容。</p><p>代码风格是典型的Java风格，习惯其他风格的同学就凑合看吧！</p><p>当然，这里还需要注意的一点是，本篇博客中所涉及到的代码都只是请求的发送，不包括对跨域问题的解决。有关跨域问题的解决过些日子我会单独写一篇文章来介绍。<del>才，才不是因为我还没完全学懂呢，哼！</del></p><p>此外，由于同步Ajax请求实际用的不是很多，本篇博客中涉及到的所有请求均为异步请求。如果各位同学有将请求同步化的需求，还请自行到相关的网站上进行查询，或查阅官方文档。在文章的合适位置我也会放置一些相关链接供同学们查看。</p><p>限于篇幅，这里只介绍最常用的两种请求方式：GET和POST。HTTP中定义的其他几种请求方式的写法大都与之类似，感兴趣或者有需求的同学们可以自行查找相关资料进行学习。</p><p>（<em>Ps: 虽然程序员平常干的也是码字的活，但是写博客总结知识是真的花时间……</em>）</p><h1 id="GET请求"><a href="#GET请求" class="headerlink" title="GET请求"></a>GET请求</h1><h2 id="1-接口文档"><a href="#1-接口文档" class="headerlink" title="1.  接口文档"></a>1.  接口文档</h2><p>假设有如下接口：</p><ul><li><p><strong>功能：</strong> 获取新的推荐列表，用于在首页进行展示</p></li><li><p><strong>地址：</strong> <code>https://baseurl/common/push/homepage</code></p></li><li><p><strong>请求方式：</strong> GET</p></li><li><p><strong>请求头：</strong> </p></li></ul><div class="table-container"><table><thead><tr><th>参数名</th><th>是否必须</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>Content-Type</td><td>是</td><td>string</td><td>请求类型：application/json</td></tr></tbody></table></div><ul><li><strong>请求参数：</strong> </li></ul><div class="table-container"><table><thead><tr><th>参数名</th><th>是否必须</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>listSize</td><td>否</td><td>Number</td><td>要获取的列表大小，默认为10</td></tr></tbody></table></div><ul><li><strong>返回示例：</strong></li></ul><p>正确时返回：</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"code"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"msg"</span>: <span class="string">"请求成功"</span>,</span><br><span class="line">    <span class="attr">"data"</span>: &#123;</span><br><span class="line">        <span class="attr">"pushList"</span>: [</span><br><span class="line">            &#123;<span class="attr">"id"</span>: <span class="number">1</span>, <span class="attr">"name"</span>: <span class="string">"请求示例01"</span>, <span class="attr">"content"</span>: <span class="string">"请求示例01"</span>&#125;,</span><br><span class="line">            &#123;<span class="attr">"id"</span>: <span class="number">2</span>, <span class="attr">"name"</span>: <span class="string">"请求示例02"</span>, <span class="attr">"content"</span>: <span class="string">"请求示例02"</span>&#125;,</span><br><span class="line">            // 省略……</span><br><span class="line">            &#123;<span class="attr">"id"</span>: <span class="number">10</span>, <span class="attr">"name"</span>: <span class="string">"请求示例10"</span>, <span class="attr">"content"</span>: <span class="string">"请求示例10"</span>&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>错误时返回：</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"code"</span>: <span class="number">3011</span>,</span><br><span class="line">    <span class="attr">"msg"</span>: <span class="string">"获取列表失败"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li><strong>返回参数说明：</strong> </li></ul><div class="table-container"><table><thead><tr><th>参数名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>code</td><td>Number</td><td>状态代码，请求成功则为0</td></tr><tr><td>msg</td><td>String</td><td>请求状态，作为对请求代码的说明</td></tr><tr><td>data</td><td>Object</td><td>返回值，仅当请求成功时存在</td></tr><tr><td>data.pushList</td><td>Array</td><td>推送列表</td></tr><tr><td>data.pushList.id</td><td>Number</td><td>推送内容的ID</td></tr><tr><td>data.pushList.name</td><td>String</td><td>推送内容的标题</td></tr><tr><td>data.pushList.content</td><td>String</td><td>推送内容的简介</td></tr></tbody></table></div><h2 id="2-原生JavaScript"><a href="#2-原生JavaScript" class="headerlink" title="2.  原生JavaScript"></a>2.  原生JavaScript</h2><p>说来惭愧，虽然我前端代码也写了不少，其实原生的JavaScript我也不咋会写，甚至没做过浏览器兼容性上的优化。我一直都是套用的<code>菜鸟教程</code>上的所谓“模板”代码……</p><p>有兴趣的同学可以移步至<a href="https://www.runoob.com/ajax/ajax-example.html" target="_blank" rel="noopener">菜鸟教程 - AJAX实例</a>，看看我当初到底都学了点儿啥。</p><p>接下来放一段示例代码：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 首先根据浏览器的不同创建xmlhttp对象</span></span><br><span class="line"><span class="keyword">var</span> xmlhttp;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.XMLHttpRequest) &#123;</span><br><span class="line">    xmlhttp = <span class="keyword">new</span> XMLHttpRequest(); <span class="comment">// IE7+, Firefox, Chrome, Opera, Safari</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    xmlhttp = <span class="keyword">new</span> ActiveXObject(<span class="string">"Microsoft.XMLHTTP"</span>); <span class="comment">// IE6, IE5</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 为xmlhttp对象绑定响应函数，该函数每当请求状态改变时就会被触发一次</span></span><br><span class="line">xmlhttp.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xmlhttp.readyState === <span class="number">4</span> &amp;&amp; xmlhttp.status === <span class="number">200</span>) &#123;</span><br><span class="line">        <span class="comment">// 此时访问 xmlhttp.responseText 就是接口返回的值</span></span><br><span class="line">        <span class="keyword">var</span> content = <span class="built_in">JSON</span>.parse(xmlhttp.responseText);</span><br><span class="line">        <span class="keyword">if</span> (content.code === <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> responseData = content.data;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 请开始你的表演</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"请求失败，"</span> + content.msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 设置请求的地址并发送请求，其中true表示发送异步请求</span></span><br><span class="line">xmlhttp.open(<span class="string">"GET"</span>, <span class="string">"https://baseurl/common/push/homepage?listSize=10"</span>, <span class="literal">true</span>);</span><br><span class="line">xmlhttp.send();</span><br></pre></td></tr></table></figure><blockquote><p><strong>注意：</strong> 上面这段代码我直接抄的菜鸟教程里的，根据实际情况和我的记忆（<del>我初学的时候也是直接抄的可以运行</del>）稍微改了改，但是没有实际测试验证过。所以仅保证思路和语法正确，不能保证直接复制代码也能运行。</p></blockquote><h2 id="3-jQuery"><a href="#3-jQuery" class="headerlink" title="3.  jQuery"></a>3.  jQuery</h2><p>与原生JavaScript相比，jQuery的语法就要简单得多，而且还不需要担心跨浏览器的兼容性问题。这一点曾经让我对jQuery爱不释手，任何项目甭管大小统统先引入一个jQuery进来。</p><p>jQuery发送Ajax请求需要使用<code>jQuser.ajax()</code>方法。多说无益，看下面这段代码就能轻易与原生写法一较高下了：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ajaxObj = $.ajax(&#123;</span><br><span class="line">    url: <span class="string">"https://baseurl/common/push/homepage"</span>,</span><br><span class="line">    data: &#123;</span><br><span class="line">        <span class="string">"listSize"</span>: <span class="number">10</span></span><br><span class="line">    &#125;,</span><br><span class="line">    dataType: <span class="string">"json"</span>,</span><br><span class="line">    type: <span class="string">"GET"</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span>(<span class="params">content</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (content.code === <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> responseData = content.data;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 请开始你的表演</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"请求失败，"</span> + content.msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    error: <span class="function"><span class="keyword">function</span>(<span class="params">xmlhttp, err</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"请求错误"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><p>如果不需要处理error事件，还可以使用更简单的<code>jQuery.get()</code>方法。有关jQuery发送Ajax请求更详尽的介绍可以参考<code>W3school</code>的<a href="https://www.w3school.com.cn/jquery/jquery_ref_ajax.asp" target="_blank" rel="noopener">jQuery参考手册 - Ajax</a>。</p><p>和上一节一样，这段代码也不保证绝对能够正常运行，毕竟我没测试过。但是语法是绝对没问题的。</p><h2 id="4-axios"><a href="#4-axios" class="headerlink" title="4.  axios"></a>4.  axios</h2><p>Axios是Node.js中的一个第三方库，也是Vue2.x中官方推荐使用的Ajax库。如果你正在使用Node.js开发前端项目的话，我还是非常推荐大家试试axios的，总之这是一个非常优秀也非常完备的Ajax库。</p><p>Axios使用如下的代码来发送GET请求：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data = &#123;</span><br><span class="line">    listSize: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">  注意：</span></span><br><span class="line"><span class="comment">  这里之所以使用let而不是用var，是因为我从接触Node.js开始就改成用WebStorm编写前端项目了。</span></span><br><span class="line"><span class="comment">  在WebStorm里面如果使用了var关键字会报警告，但是如果非要用也没什么大问题。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">axios.get(<span class="string">"https://baseurl/common/push/homepage"</span>, &#123;<span class="attr">params</span>: data&#125;).then(<span class="function"><span class="params">result</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> content = result.data;</span><br><span class="line">    <span class="keyword">if</span> (content.code === <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> responseData = content.data;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> 请开始你的表演</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"请求失败，"</span> + content.msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"请求错误"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h1 id="POST请求"><a href="#POST请求" class="headerlink" title="POST请求"></a>POST请求</h1>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;摘要：&lt;/strong&gt; 本篇文章总结并对比了使用原生JavaScript、jQuery和Node.js中的axios库通过Ajax技术请求后端接口时的不同写法。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&quot;前言&quot;&gt;&lt;a h
+      
+    
+    </summary>
+    
+    
+      <category term="前端技术" scheme="https://blog.powerinv.net.cn/categories/%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="前端" scheme="https://blog.powerinv.net.cn/tags/%E5%89%8D%E7%AB%AF/"/>
+    
+      <category term="JavaScript" scheme="https://blog.powerinv.net.cn/tags/JavaScript/"/>
+    
+      <category term="原生JavaScript" scheme="https://blog.powerinv.net.cn/tags/%E5%8E%9F%E7%94%9FJavaScript/"/>
+    
+      <category term="jQuery" scheme="https://blog.powerinv.net.cn/tags/jQuery/"/>
+    
+      <category term="Node.js" scheme="https://blog.powerinv.net.cn/tags/Node-js/"/>
+    
+      <category term="axios" scheme="https://blog.powerinv.net.cn/tags/axios/"/>
+    
+      <category term="Ajax" scheme="https://blog.powerinv.net.cn/tags/Ajax/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux下手动安装搜狗输入法和细胞词库</title>
+    <link href="https://blog.powerinv.net.cn/posts/2b056295.html"/>
+    <id>https://blog.powerinv.net.cn/posts/2b056295.html</id>
+    <published>2020-05-09T13:14:48.000Z</published>
+    <updated>2020-07-07T11:26:25.731Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="1-安装搜狗输入法Linux版"><a href="#1-安装搜狗输入法Linux版" class="headerlink" title="1. 安装搜狗输入法Linux版"></a>1. 安装搜狗输入法Linux版</h1><p>访问搜狗输入法官网<a href="https://pinyin.sogou.com/" target="_blank" rel="noopener">https://pinyin.sogou.com/</a>，点击上方的“输入法Linux版”</p><p><img src="https://gitee.com/powerinv/picgo-repo/raw/master/img/深度截图_选择区域_20200509222401.png" alt></p><p>按照自己的系统下载对应版本的安装包</p><p><img src="https://gitee.com/powerinv/picgo-repo/raw/master/img/深度截图_选择区域_20200509222430.png" alt></p><p>双击下载好的<code>deb</code>安装包，安装搜狗输入法</p><h1 id="2-安装细胞词库"><a href="#2-安装细胞词库" class="headerlink" title="2. 安装细胞词库"></a>2. 安装细胞词库</h1><p>在系统托盘的搜狗拼音输入法图标上<code>右键-&gt;设置搜狗拼音-&gt;词库</code>查看已经安装的词库</p><p><img src="https://gitee.com/powerinv/picgo-repo/raw/master/img/深度截图_选择区域_20200509223007.png" alt></p><p><img src="https://gitee.com/powerinv/picgo-repo/raw/master/img/深度截图_sogou-qimpanel_20200509223945.png" alt></p><p>点击“<code>下载更多细胞词库</code>”按钮，前往搜狗拼音官网下载新的细胞词库</p><p><img src="https://gitee.com/powerinv/picgo-repo/raw/master/img/深度截图_选择区域_20200509224243.png" alt></p><p>双击细胞词库进行安装</p><h1 id="3-可能会遇到的问题"><a href="#3-可能会遇到的问题" class="headerlink" title="3. 可能会遇到的问题"></a>3. 可能会遇到的问题</h1><h2 id="1-词库文件已损坏，请重新下载"><a href="#1-词库文件已损坏，请重新下载" class="headerlink" title="1. 词库文件已损坏，请重新下载"></a>1. 词库文件已损坏，请重新下载</h2><p>有时双击<code>.scel</code>文件时会遇到“xxx词库文件已损坏，请重新下载！”的提示，如下图：</p><p><img src="https://gitee.com/powerinv/picgo-repo/raw/master/img/20191231163415190.png" alt></p><p>这时只需要将要安装的词库文件添加至压缩文件（如.zip文件）中，并用归档文件管理器打开，再双击词库文件进行安装，即可成功安装。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;1-安装搜狗输入法Linux版&quot;&gt;&lt;a href=&quot;#1-安装搜狗输入法Linux版&quot; class=&quot;headerlink&quot; title=&quot;1. 安装搜狗输入法Linux版&quot;&gt;&lt;/a&gt;1. 安装搜狗输入法Linux版&lt;/h1&gt;&lt;p&gt;访问搜狗输入法官网&lt;a href
+      
+    
+    </summary>
+    
+    
+      <category term="Linux运维" scheme="https://blog.powerinv.net.cn/categories/Linux%E8%BF%90%E7%BB%B4/"/>
+    
+    
+      <category term="Linux" scheme="https://blog.powerinv.net.cn/tags/Linux/"/>
+    
+      <category term="运维" scheme="https://blog.powerinv.net.cn/tags/%E8%BF%90%E7%BB%B4/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>个人简历</title>
+    <link href="https://blog.powerinv.net.cn/posts/e860cc2d.html"/>
+    <id>https://blog.powerinv.net.cn/posts/e860cc2d.html</id>
+    <published>2019-10-31T18:33:47.980Z</published>
+    <updated>2020-02-29T14:18:13.841Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><hr><p><strong>姓名：</strong> ***</p><p><strong>性别：</strong> 男</p><p><strong>出生年月：</strong> 1998年11月</p><p><strong>民族：</strong> 汉族</p><p><strong>爱好特长：</strong> 程序设计、视频剪辑、建模、魔方、电子设计、学习新的编程语言和技术</p><p><strong>个人主页：</strong></p><ul><li>GitHub：<a href="https://github.com/cambridgejames" target="_blank" rel="noopener">https://github.com/cambridgejames</a></li><li>Blog：<a href="https://www.powering.net.cn" target="_blank" rel="noopener">https://www.powerinv.net.cn</a></li></ul><p><strong>联系方式：</strong></p><ul><li>Email：<a href="cambridge_james@foxmail.com">cambridge_james@foxmail.com</a></li></ul><h2 id="证书荣誉"><a href="#证书荣誉" class="headerlink" title="证书荣誉"></a>证书荣誉</h2><hr><ul><li>全国大学英语四级证书</li><li>全国计算机等级考试二级证书</li><li>普通话水平测试二级甲等证书</li><li>获得两次创新创业奖学金</li><li>发表一篇<a href="https://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFQ&amp;dbname=CJFDLAST2019&amp;filename=SZJT201905030" target="_blank" rel="noopener">论文</a>（由于发表时已退出项目组，所以排名比较靠后，但还是有不算小的一部分是我写的）</li><li>获得一项实用新型专利</li><li>全国大学生数学建模竞赛省级二等奖</li><li>国际大学生数学建模竞赛H奖</li></ul><h2 id="实践经历"><a href="#实践经历" class="headerlink" title="实践经历"></a>实践经历</h2><hr><h3 id="信息与计算科学1601班宣传委员兼心理委员"><a href="#信息与计算科学1601班宣传委员兼心理委员" class="headerlink" title="信息与计算科学1601班宣传委员兼心理委员"></a>信息与计算科学1601班宣传委员兼心理委员</h3><p><strong>时间：</strong> 2017年09月 - 2020年06月</p><p><strong>职责：</strong> 协助发布各种活动通知，在班级内做好宣传工作；辅助学校开展心理健康教育活动。</p><h3 id="东秦魔方协会副理事长"><a href="#东秦魔方协会副理事长" class="headerlink" title="东秦魔方协会副理事长"></a>东秦魔方协会副理事长</h3><p><strong>时间：</strong> 2017年10月 - 2018年10月</p><p><strong>职责：</strong> 举办各种与魔方相关的活动、比赛等。</p><h3 id="东秦魔方协会副理事长-1"><a href="#东秦魔方协会副理事长-1" class="headerlink" title="东秦魔方协会副理事长"></a>东秦魔方协会副理事长</h3><p><strong>时间：</strong> 2017年11月 - 2018年 11月</p><p><strong>职责：</strong> 负责学院各种视频的剪辑，以及设备调试等相关工作；策划并举办院级班徽、班旗设计比赛。</p><h3 id="河北晟融数据股份有限公司-Java开发工程师"><a href="#河北晟融数据股份有限公司-Java开发工程师" class="headerlink" title="河北晟融数据股份有限公司 - Java开发工程师"></a>河北晟融数据股份有限公司 - Java开发工程师</h3><p><strong>时间：</strong> 2019年11月04日 - 2019年12月27日</p><p><strong>职责：</strong> 负责职业健康服务平台网页端“知识分享”和“课程培训”模块前端及部分后端接口的开发工作。</p><h2 id="专业技能"><a href="#专业技能" class="headerlink" title="专业技能"></a>专业技能</h2><hr><ul><li>熟悉 C 语言和 C++ 的编程，能够熟练地使用 C++ 进行开发，对程序的调试有一定的经验；</li><li>熟悉 Java 编程，并能熟练使用 Java 语言编写桌面或 Web 应用；</li><li>熟悉 PHP 语言编程，对面向对象的 PHP 编程有一定的经验；</li><li>熟悉 HTML、CSS 和 JavaScript 等前端技术，并能熟练地进行前端开发；</li><li>熟悉 SQL 语句的编写，能够熟练使用 MySQL、SQL Server 等数据库；</li><li>了解 Python 语言的基本语法，能够读懂、调试和修改已有的 Python 程序；</li><li>了解 NASM 汇编语言的常用指令和基本语法；</li><li>能够熟练地使用 Bootstrap、jQuery、Vue.js 等前端框架；</li><li>了解后端框架的基本原理，能够使用 Java 或 PHP 语言自己编写一个简单的后端框架；</li><li>能够较熟练地使用 SpringBoot 框架开发 Java 后端应用；</li><li>了解一些微服务相关的知识，能够使用 SpringCloud 开发微服务应用；</li><li>能够熟练使用 Git 进行版本管理，并能使用相关工具进行自动构建和部署；</li><li>熟悉 Markdown 和 LaTeX 语法，并能熟练使用 Markdown 语法编写文档；</li><li>熟悉一些常用的数据结构和算法；</li><li>能够熟练地在 Windows 或 Linux 环境下进行开发、调试、部署和维护等操作；</li><li>熟悉 Apache、IIS、Tomcat、Nginx 等服务器软件的配置方法；</li><li>能够熟练地使用 MATLAB、R 等语言或工具处理和分析数据；</li><li>参与过大数据和机器学习相关的项目，对数据的分析和处理有一定的经验。</li></ul><h2 id="项目经历"><a href="#项目经历" class="headerlink" title="项目经历"></a>项目经历</h2><hr><p>项目经历的详细介绍：<a href="https://blog.compscosys.cn/posts/4ee312.html" target="_blank" rel="noopener">https://blog.compscosys.cn/posts/4ee312.html</a></p><h3 id="安知职业健康服务平台（Java开发工程师）"><a href="#安知职业健康服务平台（Java开发工程师）" class="headerlink" title="安知职业健康服务平台（Java开发工程师）"></a>安知职业健康服务平台（Java开发工程师）</h3><p><strong>项目时间：</strong> 2019年11月04日 - 2019年12月27日</p><p><strong>项目地址：</strong> <a href="http://zyjk.bjsrxx.com/" target="_blank" rel="noopener">http://zyjk.bjsrxx.com/</a></p><h3 id="站点目录展示工具（独立完成）"><a href="#站点目录展示工具（独立完成）" class="headerlink" title="站点目录展示工具（独立完成）"></a>站点目录展示工具（独立完成）</h3><p><strong>项目时间：</strong> 2019年09月22日 - 2019年09月27日</p><p><strong>项目地址：</strong> <a href="https://www.compscosys.cn" target="_blank" rel="noopener">https://www.compscosys.cn</a></p><p><strong>项目代码：</strong> <a href="https://github.com/cambridgejames/erroTips" target="_blank" rel="noopener">https://github.com/cambridgejames/erroTips</a></p><h3 id="学生信息数据可视化展示（独立完成）"><a href="#学生信息数据可视化展示（独立完成）" class="headerlink" title="学生信息数据可视化展示（独立完成）"></a>学生信息数据可视化展示（独立完成）</h3><p><strong>项目时间：</strong> 2019年05月21日 - 2019年05月29日</p><p><strong>项目地址：</strong> <a href="http://quickbi.compscosys.cn/index" target="_blank" rel="noopener">http://quickbi.compscosys.cn/index</a></p><p><strong>项目代码：</strong> <a href="https://github.com/cambridgejames/quick-bi" target="_blank" rel="noopener">https://github.com/cambridgejames/quick-bi</a></p><h3 id="Java局域网群聊工具（独立完成）"><a href="#Java局域网群聊工具（独立完成）" class="headerlink" title="Java局域网群聊工具（独立完成）"></a>Java局域网群聊工具（独立完成）</h3><p><strong>项目时间：</strong> 2018年12月17日 - 2018年12月21日</p><p><strong>项目代码：</strong> <a href="https://github.com/cambridgejames/Java_My_OICQ" target="_blank" rel="noopener">https://github.com/cambridgejames/Java_My_OICQ</a></p><h3 id="Java快速编译工具（独立完成）"><a href="#Java快速编译工具（独立完成）" class="headerlink" title="Java快速编译工具（独立完成）"></a>Java快速编译工具（独立完成）</h3><p><strong>项目时间：</strong> 2018年10月01日 - 2018年10月24日</p><p><strong>项目地址：</strong> <a href="https://github.com/cambridgejames/Java_Fast_Compiler" target="_blank" rel="noopener">https://github.com/cambridgejames/Java_Fast_Compiler</a></p><p><strong>项目代码：</strong> <a href="https://github.com/cambridgejames/JavaFastCompiler" target="_blank" rel="noopener">https://github.com/cambridgejames/JavaFastCompiler</a></p><h2 id="自我评价"><a href="#自我评价" class="headerlink" title="自我评价"></a>自我评价</h2><hr><ul><li>自信、乐观，具有一定的创新意识；待人诚恳，人际关系良好，处理问题时冷静稳健；</li><li>具备较强的逻辑思维，对事情认真负责，有较强的责任心和团队意识；</li><li>学习能力强，对新技术的上手速度快，能够快速掌握新技术的基本用法并加以运用；</li><li>喜欢学习新的编程语言和技术，对新技术始终抱有较强的好奇心。</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;基本信息&quot;&gt;&lt;a href=&quot;#基本信息&quot; class=&quot;headerlink&quot; title=&quot;基本信息&quot;&gt;&lt;/a&gt;基本信息&lt;/h2&gt;&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;姓名：&lt;/strong&gt; ***&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;性别：&lt;/strong&gt; 男&lt;/p
+      
+    
+    </summary>
+    
+    
+      <category term="校园招聘" scheme="https://blog.powerinv.net.cn/categories/%E6%A0%A1%E5%9B%AD%E6%8B%9B%E8%81%98/"/>
+    
+    
+      <category term="校园招聘" scheme="https://blog.powerinv.net.cn/tags/%E6%A0%A1%E5%9B%AD%E6%8B%9B%E8%81%98/"/>
+    
+      <category term="双选会" scheme="https://blog.powerinv.net.cn/tags/%E5%8F%8C%E9%80%89%E4%BC%9A/"/>
+    
+      <category term="个人简历" scheme="https://blog.powerinv.net.cn/tags/%E4%B8%AA%E4%BA%BA%E7%AE%80%E5%8E%86/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>项目经历</title>
+    <link href="https://blog.powerinv.net.cn/posts/4ee312.html"/>
+    <id>https://blog.powerinv.net.cn/posts/4ee312.html</id>
+    <published>2019-10-31T16:01:27.946Z</published>
+    <updated>2019-10-31T19:19:47.018Z</updated>
+    
+    <content type="html"><![CDATA[<p>以下是我在大二和大三期间所做的部分项目及其简介。</p><h2 id="Java快速编译工具（独立完成）"><a href="#Java快速编译工具（独立完成）" class="headerlink" title="Java快速编译工具（独立完成）"></a>Java快速编译工具（独立完成）</h2><hr><h3 id="项目时间"><a href="#项目时间" class="headerlink" title="项目时间"></a>项目时间</h3><p>2018年10月01日 - 2018年10月24日</p><h3 id="项目描述"><a href="#项目描述" class="headerlink" title="项目描述"></a>项目描述</h3><p>使用图形界面设置参数，调用JDK对Java源代码进行编译并显示编译结果</p><h3 id="相关技术"><a href="#相关技术" class="headerlink" title="相关技术"></a>相关技术</h3><ul><li>使用MFC搭建软件主界面，将一些功能封装进dll并动态调用</li><li>使用管道调用javac编译程序，接收程序的输出并显示在图形界面中</li></ul><h3 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h3><p><a href="https://github.com/cambridgejames/Java_Fast_Compiler" target="_blank" rel="noopener">https://github.com/cambridgejames/Java_Fast_Compiler</a></p><h3 id="项目代码"><a href="#项目代码" class="headerlink" title="项目代码"></a>项目代码</h3><p><a href="https://github.com/cambridgejames/JavaFastCompiler" target="_blank" rel="noopener">https://github.com/cambridgejames/JavaFastCompiler</a></p><h2 id="Java局域网群聊工具（独立完成）"><a href="#Java局域网群聊工具（独立完成）" class="headerlink" title="Java局域网群聊工具（独立完成）"></a>Java局域网群聊工具（独立完成）</h2><hr><h3 id="项目时间-1"><a href="#项目时间-1" class="headerlink" title="项目时间"></a>项目时间</h3><p>2018年12月17日 - 2018年12月21日</p><h3 id="项目描述-1"><a href="#项目描述-1" class="headerlink" title="项目描述"></a>项目描述</h3><p>一个模仿QQ群聊界面的、基于Java Swing和UDP多播的局域网群聊软件。只要用户处于同一局域网的同一多播地址中，就可以互相发送文字消息。本软件支持自定义昵称、头像和聊天气泡。</p><h3 id="相关技术-1"><a href="#相关技术-1" class="headerlink" title="相关技术"></a>相关技术</h3><ul><li>使用Java Swing实现软件中各种控件的布局</li><li>使用UDP协议在局域网中进行多播</li><li>通过多线程技术实现同时发送和接收聊天消息</li><li>通过重写JPanel的自绘方法，实现聊天气泡的显示</li></ul><h3 id="项目代码-1"><a href="#项目代码-1" class="headerlink" title="项目代码"></a>项目代码</h3><p><a href="https://github.com/cambridgejames/Java_My_OICQ" target="_blank" rel="noopener">https://github.com/cambridgejames/Java_My_OICQ</a></p><h2 id="学生信息数据可视化展示（独立完成）"><a href="#学生信息数据可视化展示（独立完成）" class="headerlink" title="学生信息数据可视化展示（独立完成）"></a>学生信息数据可视化展示（独立完成）</h2><hr><h3 id="项目时间-2"><a href="#项目时间-2" class="headerlink" title="项目时间"></a>项目时间</h3><p>2019年05月21日 - 2019年05月29日</p><h3 id="项目描述-2"><a href="#项目描述-2" class="headerlink" title="项目描述"></a>项目描述</h3><p>对处理后的某校每个学生的家庭信息和在校信息进行在线展示，方便查询</p><h3 id="相关技术-2"><a href="#相关技术-2" class="headerlink" title="相关技术"></a>相关技术</h3><ul><li>使用HTML、CSS结合Bootstrap和jQuery编写前端页面</li><li>前端使用Ajax技术调用接口获取数据，实现信息查询功能</li><li>后端使用自己实现的PHP框架编写接口，并使用Twig模板引擎渲染前端页面</li><li>数据库使用MySQL8.0版本进行搭建</li></ul><h3 id="项目地址-1"><a href="#项目地址-1" class="headerlink" title="项目地址"></a>项目地址</h3><p><a href="http://quickbi.compscosys.cn/index" target="_blank" rel="noopener">http://quickbi.compscosys.cn/index</a></p><h3 id="项目代码-2"><a href="#项目代码-2" class="headerlink" title="项目代码"></a>项目代码</h3><p><a href="https://github.com/cambridgejames/quick-bi" target="_blank" rel="noopener">https://github.com/cambridgejames/quick-bi</a></p><h2 id="站点目录展示工具（独立完成）"><a href="#站点目录展示工具（独立完成）" class="headerlink" title="站点目录展示工具（独立完成）"></a>站点目录展示工具（独立完成）</h2><hr><h3 id="项目时间-3"><a href="#项目时间-3" class="headerlink" title="项目时间"></a>项目时间</h3><p>2019年09月22日 - 2019年09月27日</p><h3 id="项目描述-3"><a href="#项目描述-3" class="headerlink" title="项目描述"></a>项目描述</h3><p>对多个站点、博客、主页等的简要信息进行统一的展示，并提供每个站点的入口</p><h3 id="相关技术-3"><a href="#相关技术-3" class="headerlink" title="相关技术"></a>相关技术</h3><ul><li>使用 HTML、CSS结合Bootstrap和jQuery编写前端页面；</li><li>前端使用jQuery实现基于纯前端和DOM操作的模糊搜索和关键词高亮功能；</li><li>后端使用自己实现的PHP框架结合Twig模板引擎渲染前端页面。</li></ul><h3 id="项目地址-2"><a href="#项目地址-2" class="headerlink" title="项目地址"></a>项目地址</h3><p><a href="https://www.compscosys.cn" target="_blank" rel="noopener">https://www.compscosys.cn</a></p><h3 id="项目代码-3"><a href="#项目代码-3" class="headerlink" title="项目代码"></a>项目代码</h3><p><a href="https://github.com/cambridgejames/erroTips" target="_blank" rel="noopener">https://github.com/cambridgejames/erroTips</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;以下是我在大二和大三期间所做的部分项目及其简介。&lt;/p&gt;
+&lt;h2 id=&quot;Java快速编译工具（独立完成）&quot;&gt;&lt;a href=&quot;#Java快速编译工具（独立完成）&quot; class=&quot;headerlink&quot; title=&quot;Java快速编译工具（独立完成）&quot;&gt;&lt;/a&gt;Java快速
+      
+    
+    </summary>
+    
+    
+      <category term="校园招聘" scheme="https://blog.powerinv.net.cn/categories/%E6%A0%A1%E5%9B%AD%E6%8B%9B%E8%81%98/"/>
+    
+    
+      <category term="校园招聘" scheme="https://blog.powerinv.net.cn/tags/%E6%A0%A1%E5%9B%AD%E6%8B%9B%E8%81%98/"/>
+    
+      <category term="项目经历" scheme="https://blog.powerinv.net.cn/tags/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/"/>
+    
+      <category term="双选会" scheme="https://blog.powerinv.net.cn/tags/%E5%8F%8C%E9%80%89%E4%BC%9A/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://blog.powerinv.net.cn/posts/4a17b156.html"/>
+    <id>https://blog.powerinv.net.cn/posts/4a17b156.html</id>
+    <published>2019-09-25T15:28:18.523Z</published>
+    <updated>2019-10-31T19:19:47.014Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+</feed>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[Ajax的三种写法]]></title>
+    <url>%2Fposts%2Fd457bf9d.html</url>
+    <content type="text"><![CDATA[摘要： 本篇文章总结并对比了使用原生JavaScript、jQuery和Node.js中的axios库通过Ajax技术请求后端接口时的不同写法。 前言研究前端开发也有不少日子了，算起来练习时长怎么也得有两年半了吧，一直没怎么认真做过总结。再加上这个博客自从搭建好了之后就没怎么用过，所以今天先来总结一下自己平常用过的几种Ajax请求的编写方法，同时也给这个博客增加点内容。 代码风格是典型的Java风格，习惯其他风格的同学就凑合看吧！ 当然，这里还需要注意的一点是，本篇博客中所涉及到的代码都只是请求的发送，不包括对跨域问题的解决。有关跨域问题的解决过些日子我会单独写一篇文章来介绍。才，才不是因为我还没完全学懂呢，哼！ 此外，由于同步Ajax请求实际用的不是很多，本篇博客中涉及到的所有请求均为异步请求。如果各位同学有将请求同步化的需求，还请自行到相关的网站上进行查询，或查阅官方文档。在文章的合适位置我也会放置一些相关链接供同学们查看。 限于篇幅，这里只介绍最常用的两种请求方式：GET和POST。HTTP中定义的其他几种请求方式的写法大都与之类似，感兴趣或者有需求的同学们可以自行查找相关资料进行学习。 （Ps: 虽然程序员平常干的也是码字的活，但是写博客总结知识是真的花时间……） GET请求1. 接口文档假设有如下接口： 功能： 获取新的推荐列表，用于在首页进行展示 地址： https://baseurl/common/push/homepage 请求方式： GET 请求头： 参数名 是否必须 类型 说明 Content-Type 是 string 请求类型：application/json 请求参数： 参数名 是否必须 类型 说明 listSize 否 Number 要获取的列表大小，默认为10 返回示例： 正确时返回： 123456789101112&#123; "code": 0, "msg": "请求成功", "data": &#123; "pushList": [ &#123;"id": 1, "name": "请求示例01", "content": "请求示例01"&#125;, &#123;"id": 2, "name": "请求示例02", "content": "请求示例02"&#125;, // 省略…… &#123;"id": 10, "name": "请求示例10", "content": "请求示例10"&#125; ] &#125;&#125; 错误时返回： 1234&#123; "code": 3011, "msg": "获取列表失败"&#125; 返回参数说明： 参数名 类型 说明 code Number 状态代码，请求成功则为0 msg String 请求状态，作为对请求代码的说明 data Object 返回值，仅当请求成功时存在 data.pushList Array 推送列表 data.pushList.id Number 推送内容的ID data.pushList.name String 推送内容的标题 data.pushList.content String 推送内容的简介 2. 原生JavaScript说来惭愧，虽然我前端代码也写了不少，其实原生的JavaScript我也不咋会写，甚至没做过浏览器兼容性上的优化。我一直都是套用的菜鸟教程上的所谓“模板”代码…… 有兴趣的同学可以移步至菜鸟教程 - AJAX实例，看看我当初到底都学了点儿啥。 接下来放一段示例代码： 1234567891011121314151617181920212223// 首先根据浏览器的不同创建xmlhttp对象var xmlhttp;if (window.XMLHttpRequest) &#123; xmlhttp = new XMLHttpRequest(); // IE7+, Firefox, Chrome, Opera, Safari&#125; else &#123; xmlhttp = new ActiveXObject("Microsoft.XMLHTTP"); // IE6, IE5&#125;// 为xmlhttp对象绑定响应函数，该函数每当请求状态改变时就会被触发一次xmlhttp.onreadystatechange = function() &#123; if (xmlhttp.readyState === 4 &amp;&amp; xmlhttp.status === 200) &#123; // 此时访问 xmlhttp.responseText 就是接口返回的值 var content = JSON.parse(xmlhttp.responseText); if (content.code === 0) &#123; var responseData = content.data; // TODO: 请开始你的表演 &#125; else &#123; console.log("请求失败，" + content.msg); &#125; &#125;&#125;;// 设置请求的地址并发送请求，其中true表示发送异步请求xmlhttp.open("GET", "https://baseurl/common/push/homepage?listSize=10", true);xmlhttp.send(); 注意： 上面这段代码我直接抄的菜鸟教程里的，根据实际情况和我的记忆（我初学的时候也是直接抄的可以运行）稍微改了改，但是没有实际测试验证过。所以仅保证思路和语法正确，不能保证直接复制代码也能运行。 3. jQuery与原生JavaScript相比，jQuery的语法就要简单得多，而且还不需要担心跨浏览器的兼容性问题。这一点曾经让我对jQuery爱不释手，任何项目甭管大小统统先引入一个jQuery进来。 jQuery发送Ajax请求需要使用jQuser.ajax()方法。多说无益，看下面这段代码就能轻易与原生写法一较高下了： 12345678910111213141516171819var ajaxObj = $.ajax(&#123; url: "https://baseurl/common/push/homepage", data: &#123; "listSize": 10 &#125;, dataType: "json", type: "GET", success: function(content) &#123; if (content.code === 0) &#123; var responseData = content.data; // TODO: 请开始你的表演 &#125; else &#123; console.log("请求失败，" + content.msg); &#125; &#125;, error: function(xmlhttp, err) &#123; console.log("请求错误"); &#125;&#125;); 如果不需要处理error事件，还可以使用更简单的jQuery.get()方法。有关jQuery发送Ajax请求更详尽的介绍可以参考W3school的jQuery参考手册 - Ajax。 和上一节一样，这段代码也不保证绝对能够正常运行，毕竟我没测试过。但是语法是绝对没问题的。 4. axiosAxios是Node.js中的一个第三方库，也是Vue2.x中官方推荐使用的Ajax库。如果你正在使用Node.js开发前端项目的话，我还是非常推荐大家试试axios的，总之这是一个非常优秀也非常完备的Ajax库。 Axios使用如下的代码来发送GET请求： 12345678910111213141516171819let data = &#123; listSize: 20&#125;;/* 注意： 这里之所以使用let而不是用var，是因为我从接触Node.js开始就改成用WebStorm编写前端项目了。 在WebStorm里面如果使用了var关键字会报警告，但是如果非要用也没什么大问题。*/axios.get("https://baseurl/common/push/homepage", &#123;params: data&#125;).then(result =&gt; &#123; let content = result.data; if (content.code === 0) &#123; let responseData = content.data; // TODO: 请开始你的表演 &#125; else &#123; console.log("请求失败，" + content.msg); &#125;&#125;).catch(err =&gt; &#123; console.log("请求错误");&#125;); POST请求]]></content>
+      <categories>
+        <category>前端技术</category>
+      </categories>
+      <tags>
+        <tag>前端</tag>
+        <tag>JavaScript</tag>
+        <tag>原生JavaScript</tag>
+        <tag>jQuery</tag>
+        <tag>Node.js</tag>
+        <tag>axios</tag>
+        <tag>Ajax</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Linux下手动安装搜狗输入法和细胞词库]]></title>
+    <url>%2Fposts%2F2b056295.html</url>
+    <content type="text"><![CDATA[1. 安装搜狗输入法Linux版访问搜狗输入法官网https://pinyin.sogou.com/，点击上方的“输入法Linux版” 按照自己的系统下载对应版本的安装包 双击下载好的deb安装包，安装搜狗输入法 2. 安装细胞词库在系统托盘的搜狗拼音输入法图标上右键-&gt;设置搜狗拼音-&gt;词库查看已经安装的词库 点击“下载更多细胞词库”按钮，前往搜狗拼音官网下载新的细胞词库 双击细胞词库进行安装 3. 可能会遇到的问题1. 词库文件已损坏，请重新下载有时双击.scel文件时会遇到“xxx词库文件已损坏，请重新下载！”的提示，如下图： 这时只需要将要安装的词库文件添加至压缩文件（如.zip文件）中，并用归档文件管理器打开，再双击词库文件进行安装，即可成功安装。]]></content>
+      <categories>
+        <category>Linux运维</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>运维</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[个人简历]]></title>
+    <url>%2Fposts%2Fe860cc2d.html</url>
+    <content type="text"><![CDATA[基本信息 姓名： *** 性别： 男 出生年月： 1998年11月 民族： 汉族 爱好特长： 程序设计、视频剪辑、建模、魔方、电子设计、学习新的编程语言和技术 个人主页： GitHub：https://github.com/cambridgejames Blog：https://www.powerinv.net.cn 联系方式： Email：cambridge_james@foxmail.com 证书荣誉 全国大学英语四级证书 全国计算机等级考试二级证书 普通话水平测试二级甲等证书 获得两次创新创业奖学金 发表一篇论文（由于发表时已退出项目组，所以排名比较靠后，但还是有不算小的一部分是我写的） 获得一项实用新型专利 全国大学生数学建模竞赛省级二等奖 国际大学生数学建模竞赛H奖 实践经历 信息与计算科学1601班宣传委员兼心理委员时间： 2017年09月 - 2020年06月 职责： 协助发布各种活动通知，在班级内做好宣传工作；辅助学校开展心理健康教育活动。 东秦魔方协会副理事长时间： 2017年10月 - 2018年10月 职责： 举办各种与魔方相关的活动、比赛等。 东秦魔方协会副理事长时间： 2017年11月 - 2018年 11月 职责： 负责学院各种视频的剪辑，以及设备调试等相关工作；策划并举办院级班徽、班旗设计比赛。 河北晟融数据股份有限公司 - Java开发工程师时间： 2019年11月04日 - 2019年12月27日 职责： 负责职业健康服务平台网页端“知识分享”和“课程培训”模块前端及部分后端接口的开发工作。 专业技能 熟悉 C 语言和 C++ 的编程，能够熟练地使用 C++ 进行开发，对程序的调试有一定的经验； 熟悉 Java 编程，并能熟练使用 Java 语言编写桌面或 Web 应用； 熟悉 PHP 语言编程，对面向对象的 PHP 编程有一定的经验； 熟悉 HTML、CSS 和 JavaScript 等前端技术，并能熟练地进行前端开发； 熟悉 SQL 语句的编写，能够熟练使用 MySQL、SQL Server 等数据库； 了解 Python 语言的基本语法，能够读懂、调试和修改已有的 Python 程序； 了解 NASM 汇编语言的常用指令和基本语法； 能够熟练地使用 Bootstrap、jQuery、Vue.js 等前端框架； 了解后端框架的基本原理，能够使用 Java 或 PHP 语言自己编写一个简单的后端框架； 能够较熟练地使用 SpringBoot 框架开发 Java 后端应用； 了解一些微服务相关的知识，能够使用 SpringCloud 开发微服务应用； 能够熟练使用 Git 进行版本管理，并能使用相关工具进行自动构建和部署； 熟悉 Markdown 和 LaTeX 语法，并能熟练使用 Markdown 语法编写文档； 熟悉一些常用的数据结构和算法； 能够熟练地在 Windows 或 Linux 环境下进行开发、调试、部署和维护等操作； 熟悉 Apache、IIS、Tomcat、Nginx 等服务器软件的配置方法； 能够熟练地使用 MATLAB、R 等语言或工具处理和分析数据； 参与过大数据和机器学习相关的项目，对数据的分析和处理有一定的经验。 项目经历 项目经历的详细介绍：https://blog.compscosys.cn/posts/4ee312.html 安知职业健康服务平台（Java开发工程师）项目时间： 2019年11月04日 - 2019年12月27日 项目地址： http://zyjk.bjsrxx.com/ 站点目录展示工具（独立完成）项目时间： 2019年09月22日 - 2019年09月27日 项目地址： https://www.compscosys.cn 项目代码： https://github.com/cambridgejames/erroTips 学生信息数据可视化展示（独立完成）项目时间： 2019年05月21日 - 2019年05月29日 项目地址： http://quickbi.compscosys.cn/index 项目代码： https://github.com/cambridgejames/quick-bi Java局域网群聊工具（独立完成）项目时间： 2018年12月17日 - 2018年12月21日 项目代码： https://github.com/cambridgejames/Java_My_OICQ Java快速编译工具（独立完成）项目时间： 2018年10月01日 - 2018年10月24日 项目地址： https://github.com/cambridgejames/Java_Fast_Compiler 项目代码： https://github.com/cambridgejames/JavaFastCompiler 自我评价 自信、乐观，具有一定的创新意识；待人诚恳，人际关系良好，处理问题时冷静稳健； 具备较强的逻辑思维，对事情认真负责，有较强的责任心和团队意识； 学习能力强，对新技术的上手速度快，能够快速掌握新技术的基本用法并加以运用； 喜欢学习新的编程语言和技术，对新技术始终抱有较强的好奇心。]]></content>
+      <categories>
+        <category>校园招聘</category>
+      </categories>
+      <tags>
+        <tag>校园招聘</tag>
+        <tag>双选会</tag>
+        <tag>个人简历</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[项目经历]]></title>
+    <url>%2Fposts%2F4ee312.html</url>
+    <content type="text"><![CDATA[以下是我在大二和大三期间所做的部分项目及其简介。 Java快速编译工具（独立完成） 项目时间2018年10月01日 - 2018年10月24日 项目描述使用图形界面设置参数，调用JDK对Java源代码进行编译并显示编译结果 相关技术 使用MFC搭建软件主界面，将一些功能封装进dll并动态调用 使用管道调用javac编译程序，接收程序的输出并显示在图形界面中 项目地址https://github.com/cambridgejames/Java_Fast_Compiler 项目代码https://github.com/cambridgejames/JavaFastCompiler Java局域网群聊工具（独立完成） 项目时间2018年12月17日 - 2018年12月21日 项目描述一个模仿QQ群聊界面的、基于Java Swing和UDP多播的局域网群聊软件。只要用户处于同一局域网的同一多播地址中，就可以互相发送文字消息。本软件支持自定义昵称、头像和聊天气泡。 相关技术 使用Java Swing实现软件中各种控件的布局 使用UDP协议在局域网中进行多播 通过多线程技术实现同时发送和接收聊天消息 通过重写JPanel的自绘方法，实现聊天气泡的显示 项目代码https://github.com/cambridgejames/Java_My_OICQ 学生信息数据可视化展示（独立完成） 项目时间2019年05月21日 - 2019年05月29日 项目描述对处理后的某校每个学生的家庭信息和在校信息进行在线展示，方便查询 相关技术 使用HTML、CSS结合Bootstrap和jQuery编写前端页面 前端使用Ajax技术调用接口获取数据，实现信息查询功能 后端使用自己实现的PHP框架编写接口，并使用Twig模板引擎渲染前端页面 数据库使用MySQL8.0版本进行搭建 项目地址http://quickbi.compscosys.cn/index 项目代码https://github.com/cambridgejames/quick-bi 站点目录展示工具（独立完成） 项目时间2019年09月22日 - 2019年09月27日 项目描述对多个站点、博客、主页等的简要信息进行统一的展示，并提供每个站点的入口 相关技术 使用 HTML、CSS结合Bootstrap和jQuery编写前端页面； 前端使用jQuery实现基于纯前端和DOM操作的模糊搜索和关键词高亮功能； 后端使用自己实现的PHP框架结合Twig模板引擎渲染前端页面。 项目地址https://www.compscosys.cn 项目代码https://github.com/cambridgejames/erroTips]]></content>
+      <categories>
+        <category>校园招聘</category>
+      </categories>
+      <tags>
+        <tag>校园招聘</tag>
+        <tag>项目经历</tag>
+        <tag>双选会</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <url>%2Fposts%2F4a17b156.html</url>
+    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
+  </entry>
+</search>
