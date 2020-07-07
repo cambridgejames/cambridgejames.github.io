@@ -84,7 +84,7 @@ theme: next
 deploy:
   type: git
   repository:
-    github: https://github.com/cambridgejames/cambridgejames.github.io.git
+    ## github: https://github.com/cambridgejames/cambridgejames.github.io.git
     coding: https://e.coding.net/colltype/gitblog.git
   branch: master
 
