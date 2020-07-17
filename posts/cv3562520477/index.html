@@ -85,11 +85,11 @@
 <meta name="keywords" content="前端,JavaScript,原生JavaScript,jQuery,Node.js,axios,Ajax">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ajax的三种写法">
-<meta property="og:url" content="https://blog.powerinv.net.cn/posts/d457bf9d.html">
+<meta property="og:url" content="https://blog.powerinv.net.cn/posts/cv3562520477/index.html">
 <meta property="og:site_name" content="史上最帅的技术宅">
 <meta property="og:description" content="摘要： 本篇文章总结并对比了使用原生JavaScript、jQuery和Node.js中的axios库通过Ajax技术请求后端接口时的不同写法。  前言研究前端开发也有不少日子了，算起来练习时长怎么也得有两年半了吧，一直没怎么认真做过总结。再加上这个博客自从搭建好了之后就没怎么用过，所以今天先来总结一下自己平常用过的几种Ajax请求的编写方法，同时也给这个博客增加点内容。 代码风格是典型的Jav">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-07T19:21:56.311Z">
+<meta property="og:updated_time" content="2020-07-17T11:36:10.114Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ajax的三种写法">
 <meta name="twitter:description" content="摘要： 本篇文章总结并对比了使用原生JavaScript、jQuery和Node.js中的axios库通过Ajax技术请求后端接口时的不同写法。  前言研究前端开发也有不少日子了，算起来练习时长怎么也得有两年半了吧，一直没怎么认真做过总结。再加上这个博客自从搭建好了之后就没怎么用过，所以今天先来总结一下自己平常用过的几种Ajax请求的编写方法，同时也给这个博客增加点内容。 代码风格是典型的Jav">
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="https://blog.powerinv.net.cn/posts/d457bf9d.html">
+  <link rel="canonical" href="https://blog.powerinv.net.cn/posts/cv3562520477/">
 
 
 
@@ -304,7 +304,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.powerinv.net.cn/posts/d457bf9d.html">
+    <link itemprop="mainEntityOfPage" href="https://blog.powerinv.net.cn/posts/cv3562520477/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Cambridge James">
@@ -349,8 +349,8 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2020-07-08T03:21:56+08:00">
-                2020-07-08
+              <time title="更新于" itemprop="dateModified" datetime="2020-07-17T19:36:10+08:00">
+                2020-07-17
               </time>
             
           </span>
@@ -404,7 +404,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.6k
+                  2.8k
                 </span>
               
 
@@ -420,7 +420,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6
+                  11
                 </span>
               
             </div>
@@ -450,6 +450,11 @@
 <p>此外，由于同步Ajax请求实际用的不是很多，本篇博客中涉及到的所有请求均为异步请求。如果各位同学有将请求同步化的需求，还请自行到相关的网站上进行查询，或查阅官方文档。在文章的合适位置我也会放置一些相关链接供同学们查看。</p>
 <p>限于篇幅，这里只介绍最常用的两种请求方式：GET和POST。HTTP中定义的其他几种请求方式的写法大都与之类似，感兴趣或者有需求的同学们可以自行查找相关资料进行学习。</p>
 <p>（<em>Ps: 虽然程序员平常干的也是码字的活，但是写博客总结知识是真的花时间……</em>）</p>
+<blockquote>
+<p>前排提示：如果代码中有错误欢迎在评论区指出，我会及时更正。</p>
+</blockquote>
+<h1 id="Ajax简介"><a href="#Ajax简介" class="headerlink" title="Ajax简介"></a>Ajax简介</h1><p><del>JavaScript发送Ajax请求是怎么回事呢？JavaScript相信大家都很熟悉，但是JavaScript发送Ajax请求是怎么回事呢，下面就让小编带大家一起了解吧。</del></p>
+<p>根据W3school的介绍，Ajax是一种在无需重新加载整个网页的情况下，通过在后台与服务器进行少量的数据交换，从而实现对网页中的某个部分进行异步更新的技术。不过我估计能看到这篇文章的同学大都对Ajax技术的意义以及优缺点有或多或少的了解，所以我在这里就不再赘述了。</p>
 <h1 id="GET请求"><a href="#GET请求" class="headerlink" title="GET请求"></a>GET请求</h1><h2 id="1-接口文档"><a href="#1-接口文档" class="headerlink" title="1.  接口文档"></a>1.  接口文档</h2><p>假设有如下接口：</p>
 <ul>
 <li><p><strong>功能：</strong> 获取新的推荐列表，用于在首页进行展示</p>
@@ -565,19 +570,140 @@
 <h2 id="2-原生JavaScript"><a href="#2-原生JavaScript" class="headerlink" title="2.  原生JavaScript"></a>2.  原生JavaScript</h2><p>说来惭愧，虽然我前端代码也写了不少，其实原生的JavaScript我也不咋会写，甚至没做过浏览器兼容性上的优化。我一直都是套用的<code>菜鸟教程</code>上的所谓“模板”代码……</p>
 <p>有兴趣的同学可以移步至<a href="https://www.runoob.com/ajax/ajax-example.html" target="_blank" rel="noopener">菜鸟教程 - AJAX实例</a>，看看我当初到底都学了点儿啥。</p>
 <p>接下来放一段示例代码：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 首先根据浏览器的不同创建xmlhttp对象</span></span><br><span class="line"><span class="keyword">var</span> xmlhttp;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.XMLHttpRequest) &#123;</span><br><span class="line">    xmlhttp = <span class="keyword">new</span> XMLHttpRequest(); <span class="comment">// IE7+, Firefox, Chrome, Opera, Safari</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    xmlhttp = <span class="keyword">new</span> ActiveXObject(<span class="string">"Microsoft.XMLHTTP"</span>); <span class="comment">// IE6, IE5</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 为xmlhttp对象绑定响应函数，该函数每当请求状态改变时就会被触发一次</span></span><br><span class="line">xmlhttp.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xmlhttp.readyState === <span class="number">4</span> &amp;&amp; xmlhttp.status === <span class="number">200</span>) &#123;</span><br><span class="line">        <span class="comment">// 此时访问 xmlhttp.responseText 就是接口返回的值</span></span><br><span class="line">        <span class="keyword">var</span> content = <span class="built_in">JSON</span>.parse(xmlhttp.responseText);</span><br><span class="line">        <span class="keyword">if</span> (content.code === <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> responseData = content.data;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 请开始你的表演</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"请求失败，"</span> + content.msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 设置请求的地址并发送请求，其中true表示发送异步请求</span></span><br><span class="line">xmlhttp.open(<span class="string">"GET"</span>, <span class="string">"https://baseurl/common/push/homepage?listSize=10"</span>, <span class="literal">true</span>);</span><br><span class="line">xmlhttp.send();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 首先根据浏览器的不同创建xmlhttp对象</span></span><br><span class="line"><span class="keyword">var</span> xmlhttp;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.XMLHttpRequest) &#123;</span><br><span class="line">    xmlhttp = <span class="keyword">new</span> XMLHttpRequest(); <span class="comment">// IE7+, Firefox, Chrome, Opera, Safari</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    xmlhttp = <span class="keyword">new</span> ActiveXObject(<span class="string">"Microsoft.XMLHTTP"</span>); <span class="comment">// IE6, IE5</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 为xmlhttp对象绑定响应函数，该函数每当请求状态改变时就会被触发一次</span></span><br><span class="line">xmlhttp.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xmlhttp.readyState === <span class="number">4</span> &amp;&amp; xmlhttp.status === <span class="number">200</span>) &#123;</span><br><span class="line">        <span class="comment">// 此时访问 xmlhttp.responseText 就是接口返回的值</span></span><br><span class="line">        <span class="keyword">var</span> content = <span class="built_in">JSON</span>.parse(xmlhttp.responseText);</span><br><span class="line">        <span class="keyword">if</span> (content.code === <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> responseData = content.data;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 请开始你的表演</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"请求失败，"</span> + content.msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 设置请求的地址并发送请求，其中true表示发送异步请求</span></span><br><span class="line">xmlhttp.setRequestHeader(<span class="string">"Content-type"</span>,<span class="string">"application/x-www-form-urlencoded"</span>);</span><br><span class="line">xmlhttp.open(<span class="string">"GET"</span>, <span class="string">"https://baseurl/common/push/homepage?listSize=10"</span>, <span class="literal">true</span>);</span><br><span class="line">xmlhttp.send();</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><strong>注意：</strong> 上面这段代码我直接抄的菜鸟教程里的，根据实际情况和我的记忆（<del>我初学的时候也是直接抄的可以运行</del>）稍微改了改，但是没有实际测试验证过。所以仅保证思路和语法正确，不能保证直接复制代码也能运行。</p>
 </blockquote>
 <h2 id="3-jQuery"><a href="#3-jQuery" class="headerlink" title="3.  jQuery"></a>3.  jQuery</h2><p>与原生JavaScript相比，jQuery的语法就要简单得多，而且还不需要担心跨浏览器的兼容性问题。这一点曾经让我对jQuery爱不释手，任何项目甭管大小统统先引入一个jQuery进来。</p>
-<p>jQuery发送Ajax请求需要使用<code>jQuser.ajax()</code>方法。多说无益，看下面这段代码就能轻易与原生写法一较高下了：</p>
+<p>jQuery发送Ajax请求需要使用<code>jQuery.ajax()</code>方法。多说无益，看下面这段代码就能轻易与原生写法一较高下了：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ajaxObj = $.ajax(&#123;</span><br><span class="line">    url: <span class="string">"https://baseurl/common/push/homepage"</span>,</span><br><span class="line">    data: &#123;</span><br><span class="line">        <span class="string">"listSize"</span>: <span class="number">10</span></span><br><span class="line">    &#125;,</span><br><span class="line">    dataType: <span class="string">"json"</span>,</span><br><span class="line">    type: <span class="string">"GET"</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span>(<span class="params">content</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (content.code === <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> responseData = content.data;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 请开始你的表演</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"请求失败，"</span> + content.msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    error: <span class="function"><span class="keyword">function</span>(<span class="params">xmlhttp, err</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"请求错误"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <p>如果不需要处理error事件，还可以使用更简单的<code>jQuery.get()</code>方法。有关jQuery发送Ajax请求更详尽的介绍可以参考<code>W3school</code>的<a href="https://www.w3school.com.cn/jquery/jquery_ref_ajax.asp" target="_blank" rel="noopener">jQuery参考手册 - Ajax</a>。</p>
 <p>和上一节一样，这段代码也不保证绝对能够正常运行，毕竟我没测试过。但是语法是绝对没问题的。</p>
 <h2 id="4-axios"><a href="#4-axios" class="headerlink" title="4.  axios"></a>4.  axios</h2><p>Axios是Node.js中的一个第三方库，也是Vue2.x中官方推荐使用的Ajax库。如果你正在使用Node.js开发前端项目的话，我还是非常推荐大家试试axios的，总之这是一个非常优秀也非常完备的Ajax库。</p>
 <p>Axios使用如下的代码来发送GET请求：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data = &#123;</span><br><span class="line">    listSize: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">  注意：</span></span><br><span class="line"><span class="comment">  这里之所以使用let而不是用var，是因为我从接触Node.js开始就改成用WebStorm编写前端项目了。</span></span><br><span class="line"><span class="comment">  在WebStorm里面如果使用了var关键字会报警告，但是如果非要用也没什么大问题。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">axios.get(<span class="string">"https://baseurl/common/push/homepage"</span>, &#123;<span class="attr">params</span>: data&#125;).then(<span class="function"><span class="params">result</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> content = result.data;</span><br><span class="line">    <span class="keyword">if</span> (content.code === <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> responseData = content.data;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> 请开始你的表演</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"请求失败，"</span> + content.msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"请求错误"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h1 id="POST请求"><a href="#POST请求" class="headerlink" title="POST请求"></a>POST请求</h1>
+<h1 id="POST请求"><a href="#POST请求" class="headerlink" title="POST请求"></a>POST请求</h1><h2 id="1-接口文档-1"><a href="#1-接口文档-1" class="headerlink" title="1.  接口文档"></a>1.  接口文档</h2><p>假设有如下接口：</p>
+<ul>
+<li><strong>功能：</strong> 上传并发布新的博客</li>
+<li><strong>地址：</strong> <code>https://baseurl/blogManagement/baseInformation/upload</code></li>
+<li><strong>请求方式：</strong> POST</li>
+<li><strong>请求头：</strong> </li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>是否必须</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content-Type</td>
+<td>是</td>
+<td>string</td>
+<td>请求类型：application/json</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>请求参数：</strong> </li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>是否必须</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>是</td>
+<td>String</td>
+<td>博客的标题</td>
+</tr>
+<tr>
+<td>isOriginal</td>
+<td>是</td>
+<td>Boolean</td>
+<td>该博客是否为原创，false-转载，true-原创</td>
+</tr>
+<tr>
+<td>blurb</td>
+<td>否</td>
+<td>String</td>
+<td>博客简介，默认为正文的第一自然段</td>
+</tr>
+<tr>
+<td>content</td>
+<td>是</td>
+<td>String</td>
+<td>博客正文</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>返回示例：</strong></li>
+</ul>
+<p>正确时返回：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"code"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"msg"</span>: <span class="string">"请求成功"</span>,</span><br><span class="line">    <span class="attr">"data"</span>: &#123;</span><br><span class="line">        <span class="attr">"id"</span>: <span class="number">10</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>错误时返回：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"code"</span>: <span class="number">4030</span>,</span><br><span class="line">    <span class="attr">"msg"</span>: <span class="string">"文章正文包含违规内容"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>返回参数说明：</strong> </li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>code</td>
+<td>Number</td>
+<td>状态代码，请求成功则为0</td>
+</tr>
+<tr>
+<td>msg</td>
+<td>String</td>
+<td>请求状态，作为对请求代码的说明</td>
+</tr>
+<tr>
+<td>data</td>
+<td>Object</td>
+<td>返回值，仅当请求成功时存在</td>
+</tr>
+<tr>
+<td>data.id</td>
+<td>Number</td>
+<td>已上传的文章的ID</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="2-原生JavaScript-1"><a href="#2-原生JavaScript-1" class="headerlink" title="2. 原生JavaScript"></a>2. 原生JavaScript</h2><p>我们在小学二年级就学过，POST请求的参数是不会添加到url中的。所以在POST请求中，Ajax的参数应该放到<code>send</code>方法中。代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 首先根据浏览器的不同创建xmlhttp对象</span></span><br><span class="line"><span class="keyword">var</span> xmlhttp;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.XMLHttpRequest) &#123;</span><br><span class="line">    xmlhttp = <span class="keyword">new</span> XMLHttpRequest(); <span class="comment">// IE7+, Firefox, Chrome, Opera, Safari</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    xmlhttp = <span class="keyword">new</span> ActiveXObject(<span class="string">"Microsoft.XMLHTTP"</span>); <span class="comment">// IE6, IE5</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 设置请求的地址并发送请求，其中true表示发送异步请求</span></span><br><span class="line">xmlhttp.open(<span class="string">"POST"</span>, <span class="string">"https://baseurl/blogManagement/baseInformation/upload"</span>, <span class="literal">true</span>);</span><br><span class="line">xmlhttp.setRequestHeader(<span class="string">"Content-type"</span>,<span class="string">"application/json;charset-UTF-8"</span>);</span><br><span class="line">xmlhttp.send(<span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    title: <span class="string">'Ajax的三种写法'</span>,</span><br><span class="line">    isOriginal: <span class="literal">true</span>,</span><br><span class="line">    blurb: <span class="string">'本篇文章总结并对比了使用原生JavaScript、jQuery和Node.js中的axios库通过Ajax技术请求后端接口时的不同写法。'</span>,</span><br><span class="line">    content: <span class="string">'为了防止递归，此处省略2000字'</span></span><br><span class="line">&#125;));</span><br><span class="line"><span class="comment">// 为xmlhttp对象绑定响应函数，该函数每当请求状态改变时就会被触发一次</span></span><br><span class="line">xmlhttp.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xmlhttp.readyState === <span class="number">4</span> &amp;&amp; xmlhttp.status === <span class="number">200</span>) &#123;</span><br><span class="line">        <span class="comment">// 此时访问 xmlhttp.responseText 就是接口返回的值</span></span><br><span class="line">        <span class="keyword">var</span> content = <span class="built_in">JSON</span>.parse(xmlhttp.responseText);</span><br><span class="line">        <span class="keyword">if</span> (content.code === <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> responseData = content.data;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 请开始你的表演</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"请求失败，"</span> + content.msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>代码非常的多，结果非常的amazing。</p>
+<h2 id="3-jQuery-1"><a href="#3-jQuery-1" class="headerlink" title="3. jQuery"></a>3. jQuery</h2><p>作为一个优秀的前端JavaScript库（关于jQuery究竟是库还是框架很多人都有自己的看法，官方认为jQuery是库，我的观点和官方一致），jQuery显然已经对Ajax做了很好的封装，只需要把方法名从GET替换为POST即可。</p>
+<p>jQuery使用如下的代码来发送POST请求：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ajaxObj = $.ajax(&#123;</span><br><span class="line">    url: <span class="string">"https://baseurl/blogManagement/baseInformation/upload"</span>,</span><br><span class="line">    data: &#123;</span><br><span class="line">        title: <span class="string">'Ajax的三种写法'</span>,</span><br><span class="line">        isOriginal: <span class="literal">true</span>,</span><br><span class="line">        blurb: <span class="string">'本篇文章总结并对比了使用原生JavaScript、jQuery和Node.js中的axios库通过Ajax技术请求后端接口时的不同写法。'</span>,</span><br><span class="line">        content: <span class="string">'为了防止递归，此处省略2000字'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    dataType: <span class="string">"json"</span>,</span><br><span class="line">    type: <span class="string">"POST"</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span>(<span class="params">content</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (content.code === <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> responseData = content.data;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 请开始你的表演</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"请求失败，"</span> + content.msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    error: <span class="function"><span class="keyword">function</span>(<span class="params">xmlhttp, err</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"请求错误"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>jQuery赛高！</p>
+<h2 id="4-axios-1"><a href="#4-axios-1" class="headerlink" title="4. axios"></a>4. axios</h2><p>Axios中使用POST方法和GET方法相似，除了将方法名从<code>axios.get</code>改为<code>axios.post</code>之外，还需要修改一下传入参数的方式，具体的写法如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data = &#123;</span><br><span class="line">    title: <span class="string">'Ajax的三种写法'</span>,</span><br><span class="line">    isOriginal: <span class="literal">true</span>,</span><br><span class="line">    blurb: <span class="string">'本篇文章总结并对比了使用原生JavaScript、jQuery和Node.js中的axios库通过Ajax技术请求后端接口时的不同写法。'</span>,</span><br><span class="line">    content: <span class="string">'为了防止递归，此处省略2000字'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 接下来请注意data参数传入的方式与get方法的不同之处</span></span><br><span class="line">axios.post(<span class="string">'https://baseurl/blogManagement/baseInformation/upload'</span>, data).then(<span class="function"><span class="params">result</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> content = result.data;</span><br><span class="line">    <span class="keyword">if</span> (content.code === <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> responseData = content.data;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> 请开始你的表演</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"请求失败，"</span> + content.msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"请求错误"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>猴！写到这里，相信有很多小伙伴都在感叹，原来在JavaScript中发送Ajax请求是一件这么简单的事情。但事实就是这样，小编对此也感到十分惊讶呢。以上就是在JavaScript中使用三种不同的方法分别发送Ajax请求时的不同写法的总结了，大家还有什么想法呢？欢迎在评论区告诉小编一起讨论哦！</p>
+
       
     </div>
     
@@ -597,7 +723,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://blog.powerinv.net.cn/posts/d457bf9d.html" title="Ajax的三种写法">https://blog.powerinv.net.cn/posts/d457bf9d.html</a>
+    <a href="https://blog.powerinv.net.cn/posts/cv3562520477/" title="Ajax的三种写法">https://blog.powerinv.net.cn/posts/cv3562520477/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -637,7 +763,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/posts/2b056295.html" rel="next" title="Linux下手动安装搜狗输入法和细胞词库">
+              <a href="/posts/cv721773205/" rel="next" title="Linux下手动安装搜狗输入法和细胞词库">
                 <i class="fa fa-chevron-left"></i> Linux下手动安装搜狗输入法和细胞词库
               </a>
             
@@ -813,7 +939,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GET请求"><span class="nav-number">2.</span> <span class="nav-text">GET请求</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-接口文档"><span class="nav-number">2.1.</span> <span class="nav-text">1.  接口文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-原生JavaScript"><span class="nav-number">2.2.</span> <span class="nav-text">2.  原生JavaScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-jQuery"><span class="nav-number">2.3.</span> <span class="nav-text">3.  jQuery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-axios"><span class="nav-number">2.4.</span> <span class="nav-text">4.  axios</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#POST请求"><span class="nav-number">3.</span> <span class="nav-text">POST请求</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ajax简介"><span class="nav-number">2.</span> <span class="nav-text">Ajax简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GET请求"><span class="nav-number">3.</span> <span class="nav-text">GET请求</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-接口文档"><span class="nav-number">3.1.</span> <span class="nav-text">1.  接口文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-原生JavaScript"><span class="nav-number">3.2.</span> <span class="nav-text">2.  原生JavaScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-jQuery"><span class="nav-number">3.3.</span> <span class="nav-text">3.  jQuery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-axios"><span class="nav-number">3.4.</span> <span class="nav-text">4.  axios</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#POST请求"><span class="nav-number">4.</span> <span class="nav-text">POST请求</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-接口文档-1"><span class="nav-number">4.1.</span> <span class="nav-text">1.  接口文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-原生JavaScript-1"><span class="nav-number">4.2.</span> <span class="nav-text">2. 原生JavaScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-jQuery-1"><span class="nav-number">4.3.</span> <span class="nav-text">3. jQuery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-axios-1"><span class="nav-number">4.4.</span> <span class="nav-text">4. axios</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -847,7 +973,7 @@
     
       <span class="post-meta-item-text">站点总字数&#58;</span>
     
-    <span title="站点总字数">3.7k</span>
+    <span title="站点总字数">5k</span>
   
 </div>
 
