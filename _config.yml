@@ -16,10 +16,10 @@ language: zh-Hans
 url: https://blog.powerinv.net.cn
 root: /
 # permalink: :year/:id/
-permalink: posts/:abbrlink.html  # 此处可以自己设置，也可以直接使用 :/abbrlink
+permalink: posts/cv:abbrlink/  # 此处可以自己设置，也可以直接使用 :/abbrlink
 abbrlink:
   alg: crc32   #算法： crc16(default) and crc32
-  rep: hex     #进制： dec(default) and hex
+  rep: dec     #进制： dec(default) and hex
 permalink_defaults:
 
 # Directory
@@ -84,7 +84,7 @@ theme: next
 deploy:
   type: git
   repository:
-    ## github: https://github.com/cambridgejames/cambridgejames.github.io.git
+    github: https://github.com/cambridgejames/cambridgejames.github.io.git
     coding: https://e.coding.net/colltype/gitblog.git
   branch: master
 
