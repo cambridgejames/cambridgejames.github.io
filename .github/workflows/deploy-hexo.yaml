@@ -1,0 +1,60 @@
+name: Build and Deploy Hexo
+
+on:
+  push:
+    branches:
+    - develop
+
+jobs:
+  buile-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Framework
+      uses: actions/checkout@v4
+      with:
+        ref: framework
+
+    - name: List Framework Files
+      run: |
+        pwd
+        echo ----------
+        ls -la .
+
+    - name: Add Source Files
+      uses: actions/checkout@v4
+      with:
+        ref: develop
+        path: source
+
+    - name: List Source Files
+      run: |
+        pwd
+        echo ----------
+        ls -la ./source
+
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 12
+
+    - name: Setup Hexo
+      run: |
+        npm install hexo-cli -g
+        npm install
+
+    - name: Generate Hexo Site
+      run: hexo generate --debug
+
+    - name: List Source Files
+      run: |
+        pwd
+        echo ----------
+        cat ./public/index.html
+
+    - name: Deploy to Master Branch
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: master
+        FOLDER: public
